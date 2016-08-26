@@ -5,7 +5,7 @@ import (
     "fmt"
     "time"
     "github.com/hashicorp/terraform/helper/schema"
-    "composeio"
+    "github.com/qualialabs/composeio-go-api"
 )
 
 func resourceMongodb() *schema.Resource {

@@ -2,7 +2,7 @@ package main
 
 import (
   "log"
-  "composeio"
+  "github.com/qualialabs/composeio-go-api"
 )
 
 type Config struct {
