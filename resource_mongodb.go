@@ -5,6 +5,7 @@ import (
     "fmt"
     "time"
     "github.com/hashicorp/terraform/helper/schema"
+    "composeio"
 )
 
 func resourceMongodb() *schema.Resource {
