@@ -9,16 +9,20 @@ func Provider() *schema.Provider {
     return &schema.Provider{
 
       Schema: map[string]*schema.Schema{
-        "composeio_token": &schema.Schema{
+        "admin_mongodb_url": &schema.Schema{
           Type:        schema.TypeString,
           Optional:    true,
-          DefaultFunc: schema.EnvDefaultFunc("COMPOSEIO_TOKEN", nil),
+          DefaultFunc: schema.EnvDefaultFunc("ADMIN_MONGODB_URL", nil),
+        },
+        "ssl_pem_path": &schema.Schema{
+          Type:        schema.TypeString,
+          Optional:    true,
+          DefaultFunc: schema.EnvDefaultFunc("SSL_PEM_PATH", nil),
         },
       },
 
 
       ResourcesMap: map[string]*schema.Resource{
-          "composeio_mongodb": resourceMongodb(),
           "composeio_mongodbuser": resourceMongodbUser(),
       },
 
@@ -30,7 +34,8 @@ func Provider() *schema.Provider {
 func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 
   config := Config{
-    COMPOSEIO_TOKEN: d.Get("composeio_token").(string),
+    ADMIN_MONGODB_URL: d.Get("admin_mongodb_url").(string),
+    SSL_PEM_PATH: d.Get("ssl_pem_path").(string),
   }
 
   log.Println("[INFO] Initializing Composeio client")

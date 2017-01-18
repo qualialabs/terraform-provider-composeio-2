@@ -3,34 +3,10 @@ package main
 import (
     "log"
     "fmt"
-    "time"
     "github.com/hashicorp/terraform/helper/schema"
-    "github.com/qualialabs/composeio-go-api"
+    "github.com/qualialabs/composeio-go-api-2"
 )
 
-func resourceMongodb() *schema.Resource {
-    return &schema.Resource{
-        Create: resourceMongodbCreate,
-        Read:   resourceMongodbRead,
-        Update: resourceMongodbUpdate,
-        Delete: resourceMongodbDelete,
-
-        Schema: map[string]*schema.Schema{
-            "account": &schema.Schema{
-                Type:     schema.TypeString,
-                Required: true,
-            },
-            "deployment": &schema.Schema{
-                Type:     schema.TypeString,
-                Required: true,
-            },
-            "db_name": &schema.Schema{
-                Type:     schema.TypeString,
-                Required: true,
-            },
-        },
-    }
-}
 
 func resourceMongodbUser() *schema.Resource {
     return &schema.Resource{
@@ -65,63 +41,6 @@ func resourceMongodbUser() *schema.Resource {
 }
 
 
-
-func resourceMongodbCreate(d *schema.ResourceData, meta interface{}) error {
-
-    client := meta.(*composeio.Client)
-
-    // create db
-    account := d.Get("account").(string)
-    deployment := d.Get("deployment").(string)
-    db_name := d.Get("db_name").(string)
-    log.Println("[DEBUG] Creating new mongodb" + db_name +" on deployement " + deployment + " under account " + account)
-    mongodb := &composeio.Mongodb{
-      Account: account,
-      Deployment: deployment,
-      Name: db_name,
-    }
-    err := client.CreateMongodb(mongodb)
-    if err != nil {
-      return fmt.Errorf("Failed to create mongodb: %s", err.Error())
-    }
-
-    time.Sleep(time.Millisecond * 5000)
-
-    d.SetId(db_name)
-    log.Printf("[INFO] record ID: %s", d.Id())
-    
-    return resourceMongodbRead(d, meta)
-}
-
-func resourceMongodbRead(d *schema.ResourceData, meta interface{}) error {
-  client := meta.(*composeio.Client)
-
-  // create db
-  db_name := d.Get("db_name").(string)
-  account := d.Get("account").(string)
-  deployment := d.Get("deployment").(string)
-  log.Println("[DEBUG] Finding mongodb" + db_name +" on " + deployment + " under account " + account)
-  mongodb := &composeio.Mongodb{
-    Account: account,
-    Deployment: deployment,
-    Name: db_name,
-  }
-  err := client.ReadMongodb(mongodb)
-  if err != nil {
-    return fmt.Errorf("Failed to read mongodb: %s", err.Error())
-  }
-  return nil
-}
-
-func resourceMongodbUpdate(d *schema.ResourceData, meta interface{}) error {
-    return nil
-}
-
-func resourceMongodbDelete(d *schema.ResourceData, meta interface{}) error {
-    return nil
-}
-
-// #######################
 func resourceMongodbUserCreate(d *schema.ResourceData, meta interface{}) error {
 
     client := meta.(*composeio.Client)
